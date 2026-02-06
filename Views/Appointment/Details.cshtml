@@ -1,0 +1,171 @@
+@model HealthcareManagementSystem.Models.Appointment
+
+@{
+    ViewData["Title"] = "Appointment Details";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-calendar-check text-primary"></i> Appointment Details</h2>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.AppointmentId" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-list"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-info-circle"></i> Appointment Information</h5>
+                </div>
+                <div class="card-body">
+                    <dl class="row">
+                        <dt class="col-sm-3">Patient:</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Patient != null)
+                            {
+                                <i class="fas fa-user text-primary"></i>
+                                @Model.Patient.FirstName @Model.Patient.LastName
+                            }
+                            else
+                            {
+                                <span class="text-muted">Patient information not available</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Doctor:</dt>
+                        <dd class="col-sm-9">
+                            @if (Model.Doctor != null)
+                            {
+                                <i class="fas fa-user-md text-info"></i>
+                                <text>Dr. @Model.Doctor.FirstName @Model.Doctor.LastName</text>
+                            }
+                            else
+                            {
+                                <span class="text-muted">Doctor information not available</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Date & Time:</dt>
+                        <dd class="col-sm-9">
+                            <i class="fas fa-calendar text-success"></i>
+                            @Model.AppointmentDateTime.ToString("dddd, MMM dd, yyyy 'at' hh:mm tt")
+                        </dd>
+
+                        <dt class="col-sm-3">Duration:</dt>
+                        <dd class="col-sm-9">
+                            <i class="fas fa-clock text-warning"></i>
+                            @Model.DurationMinutes minutes
+                        </dd>
+
+                        <dt class="col-sm-3">Status:</dt>
+                        <dd class="col-sm-9">
+                        @switch ((int)Model.Status)
+                            {
+                                case 0:
+                                    <span class="badge bg-secondary">Scheduled</span>
+                                    break;
+                                case 1:
+                                    <span class="badge bg-info">Confirmed</span>
+                                    break;
+                                case 2:
+                                    <span class="badge bg-warning">In Progress</span>
+                                    break;
+                                case 3:
+                                    <span class="badge bg-success">Completed</span>
+                                    break;
+                                case 4:
+                                    <span class="badge bg-danger">Cancelled</span>
+                                    break;
+                                case 5:
+                                    <span class="badge bg-dark">No Show</span>
+                                    break;
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Fee:</dt>
+                        <dd class="col-sm-9">
+                            <i class="fas fa-dollar-sign text-success"></i>
+                            $@Model.Fee.ToString("F2")
+                            @if (Model.IsPaid)
+                            {
+                                <span class="badge bg-success ms-2">Paid</span>
+                            }
+                            else
+                            {
+                                <span class="badge bg-warning ms-2">Unpaid</span>
+                            }
+                        </dd>
+
+                        <dt class="col-sm-3">Reason for Visit:</dt>
+                        <dd class="col-sm-9">
+                            @if (!string.IsNullOrEmpty(Model.ReasonForVisit))
+                            {
+                                @Model.ReasonForVisit
+                            }
+                            else
+                            {
+                                <span class="text-muted">No reason specified</span>
+                            }
+                        </dd>
+
+                        @if (!string.IsNullOrEmpty(Model.Notes))
+                        {
+                            <dt class="col-sm-3">Notes:</dt>
+                            <dd class="col-sm-9">@Model.Notes</dd>
+                        }
+
+                        <dt class="col-sm-3">Created:</dt>
+                        <dd class="col-sm-9">@Model.CreatedAt.ToString("MMM dd, yyyy hh:mm tt")</dd>
+
+                        @if (Model.UpdatedAt != DateTime.MinValue)
+                        {
+                            <dt class="col-sm-3">Last Updated:</dt>
+                            <dd class="col-sm-9">@Model.UpdatedAt.ToString("MMM dd, yyyy hh:mm tt")</dd>
+                        }
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-tools"></i> Quick Actions</h6>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Edit" asp-route-id="@Model.AppointmentId" class="btn btn-warning">
+                            <i class="fas fa-edit"></i> Edit Appointment
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@Model.AppointmentId" class="btn btn-outline-danger">
+                            <i class="fas fa-trash"></i> Delete Appointment
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            @if (Model.Patient != null)
+            {
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6><i class="fas fa-user"></i> Patient Information</h6>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Name:</strong> @Model.Patient.FirstName @Model.Patient.LastName</p>
+                        <p><strong>Phone:</strong> @Model.Patient.PhoneNumber</p>
+                        <p><strong>Email:</strong> @Model.Patient.Email</p>
+                        <a asp-controller="Patient" asp-action="Details" asp-route-id="@Model.Patient.PatientId" class="btn btn-sm btn-outline-primary">
+                            <i class="fas fa-eye"></i> View Patient
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>

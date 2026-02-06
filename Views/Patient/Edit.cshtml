@@ -1,0 +1,259 @@
+@model HealthcareManagementSystem.Models.Patient
+
+@{
+    ViewData["Title"] = "Edit Patient";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-user-edit text-primary"></i> Edit Patient - @Model.FullName</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">
+        <i class="fas fa-arrow-left"></i> Back to List
+    </a>
+</div>
+
+<form asp-action="Edit" method="post" class="needs-validation" novalidate>
+    <input type="hidden" asp-for="PatientId" />
+    <input type="hidden" asp-for="CreatedAt" />
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-user"></i> Personal Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="FirstName" class="form-label required">First Name</label>
+                            <input asp-for="FirstName" class="form-control" placeholder="Enter first name" required />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="LastName" class="form-label required">Last Name</label>
+                            <input asp-for="LastName" class="form-control" placeholder="Enter last name" required />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label required">Email Address</label>
+                        <input asp-for="Email" class="form-control" placeholder="patient@example.com" type="email" required />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label required">Phone Number</label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="+1 (555) 123-4567" required />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DateOfBirth" class="form-label required">Date of Birth</label>
+                            <input asp-for="DateOfBirth" class="form-control" type="date" required />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Gender" class="form-label required">Gender</label>
+                            <select asp-for="Gender" class="form-select" required>
+                                <option value="">Select Gender</option>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <span asp-validation-for="Gender" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-home"></i> Contact Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label asp-for="Address" class="form-label">Address</label>
+                        <textarea asp-for="Address" class="form-control" rows="3" placeholder="Enter full address"></textarea>
+                        <span asp-validation-for="Address" class="text-danger"></span>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EmergencyContactName" class="form-label">Emergency Contact Name</label>
+                            <input asp-for="EmergencyContactName" class="form-control" placeholder="Contact person name" />
+                            <span asp-validation-for="EmergencyContactName" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="EmergencyContactPhone" class="form-label">Emergency Contact Phone</label>
+                            <input asp-for="EmergencyContactPhone" class="form-control" placeholder="+1 (555) 123-4567" />
+                            <span asp-validation-for="EmergencyContactPhone" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-heartbeat"></i> Medical Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="BloodType" class="form-label">Blood Type</label>
+                            <select asp-for="BloodType" class="form-select">
+                                <option value="">Select Blood Type</option>
+                                <option value="A+">A+</option>
+                                <option value="A-">A-</option>
+                                <option value="B+">B+</option>
+                                <option value="B-">B-</option>
+                                <option value="AB+">AB+</option>
+                                <option value="AB-">AB-</option>
+                                <option value="O+">O+</option>
+                                <option value="O-">O-</option>
+                            </select>
+                            <span asp-validation-for="BloodType" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="Allergies" class="form-label">Known Allergies</label>
+                        <textarea asp-for="Allergies" class="form-control" rows="2" placeholder="List any known allergies (e.g., medications, food, environmental)"></textarea>
+                        <span asp-validation-for="Allergies" class="text-danger"></span>
+                        <div class="form-text">
+                            <i class="fas fa-exclamation-triangle text-warning"></i> 
+                            Important: Please update allergy information carefully as this affects treatment decisions.
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="MedicalHistory" class="form-label">Medical History</label>
+                        <textarea asp-for="MedicalHistory" class="form-control" rows="3" placeholder="Brief medical history, chronic conditions, previous surgeries, etc."></textarea>
+                        <span asp-validation-for="MedicalHistory" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-3">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-clock"></i> Record Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <strong>Patient ID:</strong> @Model.PatientId
+                            </div>
+                            <div class="mb-2">
+                                <strong>Created:</strong> @Model.CreatedAt.ToString("MMM dd, yyyy 'at' h:mm tt")
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <strong>Last Updated:</strong> @Model.UpdatedAt.ToString("MMM dd, yyyy 'at' h:mm tt")
+                            </div>
+                            <div class="text-muted">
+                                <small><i class="fas fa-info-circle"></i> Record will be updated when you save changes</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <a asp-action="Details" asp-route-id="@Model.PatientId" class="btn btn-outline-info me-md-2">
+                    <i class="fas fa-eye"></i> View Details
+                </a>
+                <a asp-action="Index" class="btn btn-outline-secondary me-md-2">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </div>
+        </div>
+    </div>
+</form>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script>
+        // Bootstrap form validation
+        (function() {
+            'use strict';
+            window.addEventListener('load', function() {
+                var forms = document.getElementsByClassName('needs-validation');
+                var validation = Array.prototype.filter.call(forms, function(form) {
+                    form.addEventListener('submit', function(event) {
+                        if (form.checkValidity() === false) {
+                            event.preventDefault();
+                            event.stopPropagation();
+                        }
+                        form.classList.add('was-validated');
+                    }, false);
+                });
+            }, false);
+        })();
+
+        // Set max date for date of birth to today
+        document.addEventListener('DOMContentLoaded', function() {
+            var today = new Date().toISOString().split('T')[0];
+            document.getElementById('DateOfBirth').setAttribute('max', today);
+        });
+
+        // Highlight unsaved changes
+        let originalFormData = new FormData(document.querySelector('form'));
+        let hasUnsavedChanges = false;
+
+        document.querySelectorAll('input, select, textarea').forEach(element => {
+            element.addEventListener('change', function() {
+                hasUnsavedChanges = true;
+                document.querySelector('.btn-primary').classList.add('btn-warning');
+                document.querySelector('.btn-primary').innerHTML = '<i class="fas fa-exclamation-triangle"></i> Save Changes';
+            });
+        });
+
+        // Warn before leaving with unsaved changes
+        window.addEventListener('beforeunload', function(e) {
+            if (hasUnsavedChanges) {
+                e.preventDefault();
+                e.returnValue = 'You have unsaved changes. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        });
+
+        // Reset warning on form submit
+        document.querySelector('form').addEventListener('submit', function() {
+            hasUnsavedChanges = false;
+        });
+    </script>
+}
+
+<style>
+    .required:after {
+        content: " *";
+        color: red;
+    }
+    
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    .btn-warning {
+        transition: all 0.3s ease;
+    }
+</style>

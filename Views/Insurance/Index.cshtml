@@ -1,0 +1,389 @@
+@model IEnumerable<HealthcareManagementSystem.Models.Insurance>
+
+@{
+    ViewData["Title"] = "Insurance Management";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1><i class="fas fa-shield-alt"></i> Insurance Management</h1>
+                <p>Manage patient insurance policies and verify coverage</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <a asp-action="Create" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus"></i> Add New Policy
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <!-- Alert Messages -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["SuccessMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> @TempData["ErrorMessage"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <!-- Search and Filter Section -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-search"></i> Search & Filter</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">Search</label>
+                    <input type="text" name="searchString" value="@ViewBag.CurrentFilter" 
+                           class="form-control" placeholder="Provider, Policy, Patient...">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Patient</label>
+                    @Html.DropDownList("patientId", (SelectList)ViewBag.Patients, "All Patients", 
+                        new { @class = "form-select" })
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="all" selected="@(ViewBag.StatusFilter == "all")">All Status</option>
+                        <option value="active" selected="@(ViewBag.StatusFilter == "active")">Active</option>
+                        <option value="expired" selected="@(ViewBag.StatusFilter == "expired")">Expired</option>
+                        <option value="inactive" selected="@(ViewBag.StatusFilter == "inactive")">Inactive</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Sort By</label>
+                    <select name="sortOrder" class="form-select">
+                        <option value="" selected="@(ViewBag.CurrentSort == "")">Recent First</option>
+                        <option value="provider" selected="@(ViewBag.CurrentSort == "provider")">Provider A-Z</option>
+                        <option value="provider_desc" selected="@(ViewBag.CurrentSort == "provider_desc")">Provider Z-A</option>
+                        <option value="policy" selected="@(ViewBag.CurrentSort == "policy")">Policy Number</option>
+                        <option value="date" selected="@(ViewBag.CurrentSort == "date")">Effective Date</option>
+                        <option value="status" selected="@(ViewBag.CurrentSort == "status")">Status</option>
+                    </select>
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" class="btn btn-outline-primary w-100">
+                        <i class="fas fa-search"></i> Filter
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-primary">
+                <div class="card-body">
+                    <h3>@Model.Count()</h3>
+                    <p>Total Policies</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-success">
+                <div class="card-body">
+                    <h3>@Model.Count(i => i.IsActive && !i.IsExpired)</h3>
+                    <p>Active Policies</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-warning">
+                <div class="card-body">
+                    <h3>@Model.Count(i => i.IsExpired)</h3>
+                    <p>Expired Policies</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <div class="card stat-card bg-danger">
+                <div class="card-body">
+                    <h3>@Model.Count(i => !i.IsActive)</h3>
+                    <p>Inactive Policies</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insurance Policies Table -->
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Insurance Policies (@Model.Count() records)</h5>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-outline-secondary" onclick="toggleView('table')">
+                    <i class="fas fa-table"></i> Table View
+                </button>
+                <button type="button" class="btn btn-outline-secondary" onclick="toggleView('card')">
+                    <i class="fas fa-th-large"></i> Card View
+                </button>
+            </div>
+        </div>
+        <div class="card-body p-0">
+            <!-- Table View -->
+            <div id="tableView" class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>
+                                <a asp-action="Index" asp-route-sortOrder="@ViewBag.ProviderSortParm" 
+                                   asp-route-currentFilter="@ViewBag.CurrentFilter"
+                                   asp-route-patientId="@ViewBag.PatientFilter"
+                                   asp-route-status="@ViewBag.StatusFilter"
+                                   class="text-white text-decoration-none">
+                                    Provider @if (ViewBag.CurrentSort == "provider") { <i class="fas fa-sort-up"></i> } 
+                                             else if (ViewBag.CurrentSort == "provider_desc") { <i class="fas fa-sort-down"></i> }
+                                             else { <i class="fas fa-sort"></i> }
+                                </a>
+                            </th>
+                            <th>
+                                <a asp-action="Index" asp-route-sortOrder="@ViewBag.PolicySortParm" 
+                                   asp-route-currentFilter="@ViewBag.CurrentFilter"
+                                   asp-route-patientId="@ViewBag.PatientFilter"
+                                   asp-route-status="@ViewBag.StatusFilter"
+                                   class="text-white text-decoration-none">
+                                    Policy # @if (ViewBag.CurrentSort == "policy") { <i class="fas fa-sort-up"></i> } 
+                                             else if (ViewBag.CurrentSort == "policy_desc") { <i class="fas fa-sort-down"></i> }
+                                             else { <i class="fas fa-sort"></i> }
+                                </a>
+                            </th>
+                            <th>Patient</th>
+                            <th>
+                                <a asp-action="Index" asp-route-sortOrder="@ViewBag.DateSortParm" 
+                                   asp-route-currentFilter="@ViewBag.CurrentFilter"
+                                   asp-route-patientId="@ViewBag.PatientFilter"
+                                   asp-route-status="@ViewBag.StatusFilter"
+                                   class="text-white text-decoration-none">
+                                    Effective Date @if (ViewBag.CurrentSort == "date") { <i class="fas fa-sort-up"></i> } 
+                                                   else if (ViewBag.CurrentSort == "date_desc") { <i class="fas fa-sort-down"></i> }
+                                                   else { <i class="fas fa-sort"></i> }
+                                </a>
+                            </th>
+                            <th>Coverage</th>
+                            <th>
+                                <a asp-action="Index" asp-route-sortOrder="@ViewBag.StatusSortParm" 
+                                   asp-route-currentFilter="@ViewBag.CurrentFilter"
+                                   asp-route-patientId="@ViewBag.PatientFilter"
+                                   asp-route-status="@ViewBag.StatusFilter"
+                                   class="text-white text-decoration-none">
+                                    Status @if (ViewBag.CurrentSort == "status") { <i class="fas fa-sort-up"></i> } 
+                                           else if (ViewBag.CurrentSort == "status_desc") { <i class="fas fa-sort-down"></i> }
+                                           else { <i class="fas fa-sort"></i> }
+                                </a>
+                            </th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="insurance-provider-icon me-2">
+                                            <i class="fas fa-shield-alt text-primary"></i>
+                                        </div>
+                                        <div>
+                                            <strong>@item.ProviderName</strong>
+                                            <br>
+                                            <small class="text-muted">Group: @item.GroupNumber</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <code class="bg-light px-2 py-1 rounded">@item.PolicyNumber</code>
+                                </td>
+                                <td>
+                                    <div>
+                                        <strong>@item.Patient.FullName</strong>
+                                        <br>
+                                        <small class="text-muted">
+                                            @if (!string.IsNullOrEmpty(item.RelationshipToPrimary))
+                                            {
+                                                <span>(@item.RelationshipToPrimary)</span>
+                                            }
+                                        </small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        @item.EffectiveDate.ToString("MMM dd, yyyy")
+                                        @if (item.ExpirationDate.HasValue)
+                                        {
+                                            <br>
+                                            <small class="text-muted">Exp: @item.ExpirationDate.Value.ToString("MMM dd, yyyy")</small>
+                                        }
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="coverage-info">
+                                        <div><strong>@item.CoveragePercentage.ToString("0")%</strong></div>
+                                        <small class="text-muted">
+                                            Copay: ₹@item.CopayAmount.ToString("0.00")
+                                            <br>
+                                            Deductible: ₹@item.DeductibleAmount.ToString("0.00")
+                                        </small>
+                                    </div>
+                                </td>
+                                <td>
+                                    @if (item.Status == "Active")
+                                    {
+                                        <span class="badge bg-success">
+                                            <i class="fas fa-check-circle"></i> Active
+                                        </span>
+                                    }
+                                    else if (item.Status == "Expired")
+                                    {
+                                        <span class="badge bg-warning">
+                                            <i class="fas fa-clock"></i> Expired
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <span class="badge bg-danger">
+                                            <i class="fas fa-times-circle"></i> Inactive
+                                        </span>
+                                    }
+                                </td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.InsuranceId" 
+                                           class="btn btn-sm btn-outline-info" title="View Details">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.InsuranceId" 
+                                           class="btn btn-sm btn-outline-primary" title="Edit">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-action="VerifyEligibility" asp-route-id="@item.InsuranceId" 
+                                           class="btn btn-sm btn-outline-success" title="Verify Eligibility">
+                                            <i class="fas fa-shield-check"></i>
+                                        </a>
+                                        <a asp-action="Delete" asp-route-id="@item.InsuranceId" 
+                                           class="btn btn-sm btn-outline-danger" title="Delete">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Card View -->
+            <div id="cardView" style="display: none;" class="p-3">
+                <div class="row">
+                    @foreach (var item in Model)
+                    {
+                        <div class="col-lg-4 col-md-6 mb-4">
+                            <div class="card insurance-card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h5 class="card-title mb-0">@item.ProviderName</h5>
+                                        @if (item.Status == "Active")
+                                        {
+                                            <span class="badge bg-success">Active</span>
+                                        }
+                                        else if (item.Status == "Expired")
+                                        {
+                                            <span class="badge bg-warning">Expired</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Inactive</span>
+                                        }
+                                    </div>
+                                    
+                                    <div class="card-number mb-2">
+                                        Policy: @item.PolicyNumber
+                                    </div>
+                                    
+                                    <p class="card-text">
+                                        <strong>Patient:</strong> @item.Patient.FullName<br>
+                                        <strong>Group:</strong> @item.GroupNumber<br>
+                                        <strong>Coverage:</strong> @item.CoveragePercentage.ToString("0")%<br>
+                                        <strong>Copay:</strong> ₹@item.CopayAmount.ToString("0.00")<br>
+                                        <strong>Effective:</strong> @item.EffectiveDate.ToString("MMM dd, yyyy")
+                                    </p>
+                                </div>
+                                <div class="card-footer">
+                                    <div class="btn-group w-100" role="group">
+                                        <a asp-action="Details" asp-route-id="@item.InsuranceId" 
+                                           class="btn btn-sm btn-outline-light">
+                                            <i class="fas fa-eye"></i> Details
+                                        </a>
+                                        <a asp-action="Edit" asp-route-id="@item.InsuranceId" 
+                                           class="btn btn-sm btn-outline-light">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                        <a asp-action="VerifyEligibility" asp-route-id="@item.InsuranceId" 
+                                           class="btn btn-sm btn-outline-light">
+                                            <i class="fas fa-shield-check"></i> Verify
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center py-5">
+            <div class="mb-4">
+                <i class="fas fa-shield-alt fa-4x text-muted"></i>
+            </div>
+            <h4 class="text-muted">No Insurance Policies Found</h4>
+            <p class="text-muted">Start by adding your first insurance policy.</p>
+            <a asp-action="Create" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Insurance Policy
+            </a>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script>
+        function toggleView(viewType) {
+            const tableView = document.getElementById('tableView');
+            const cardView = document.getElementById('cardView');
+            const buttons = document.querySelectorAll('.btn-group button');
+            
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            if (viewType === 'table') {
+                tableView.style.display = 'block';
+                cardView.style.display = 'none';
+                event.target.classList.add('active');
+            } else {
+                tableView.style.display = 'none';
+                cardView.style.display = 'block';
+                event.target.classList.add('active');
+            }
+        }
+
+        // Initialize table view as active
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelector('button[onclick="toggleView(\'table\')"]').classList.add('active');
+        });
+    </script>
+}

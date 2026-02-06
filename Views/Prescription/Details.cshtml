@@ -1,0 +1,60 @@
+@model HealthcareManagementSystem.Models.Prescription
+
+@{
+    ViewData["Title"] = "Prescription Details";
+}
+
+<div class="container-fluid">
+    <h2>Prescription Details</h2>
+
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-2">Medication:</dt>
+                <dd class="col-sm-10">@Model.MedicationName</dd>
+
+                <dt class="col-sm-2">Dosage:</dt>
+                <dd class="col-sm-10">@Model.Dosage</dd>
+
+                <dt class="col-sm-2">Instructions:</dt>
+                <dd class="col-sm-10">@Model.Instructions</dd>
+
+                <dt class="col-sm-2">Patient:</dt>
+                <dd class="col-sm-10">
+                    @if (Model.Patient != null)
+                    {
+                        @Model.Patient.FirstName @Model.Patient.LastName
+                    }
+                </dd>
+
+                <dt class="col-sm-2">Doctor:</dt>
+                <dd class="col-sm-10">
+                    @if (Model.Doctor != null)
+                    {
+                        <text>Dr. @Model.Doctor.FirstName @Model.Doctor.LastName</text>
+                    }
+                </dd>
+
+                <dt class="col-sm-2">Prescribed:</dt>
+                <dd class="col-sm-10">@Model.PrescribedDate.ToString("MMM dd, yyyy")</dd>
+
+                <dt class="col-sm-2">Status:</dt>
+                <dd class="col-sm-10">
+                    @if (Model.IsActive)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </dd>
+            </dl>
+        </div>
+    </div>
+
+    <div class="mt-3">
+        <a asp-action="Edit" asp-route-id="@Model.PrescriptionId" class="btn btn-warning">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>

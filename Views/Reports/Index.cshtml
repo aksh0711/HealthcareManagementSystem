@@ -1,0 +1,180 @@
+@{
+    ViewData["Title"] = "Reports & Analytics";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-chart-bar text-primary"></i> Reports & Analytics</h2>
+        <div>
+            <a asp-action="Dashboard" class="btn btn-primary">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </div>
+    </div>
+
+    <!-- Report Categories -->
+    <div class="row">
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 shadow-sm report-card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-users fa-3x text-primary"></i>
+                    </div>
+                    <h5 class="card-title">Patient Statistics</h5>
+                    <p class="card-text">View patient demographics, age groups, blood types, and growth trends.</p>
+                    <a asp-action="PatientStatistics" class="btn btn-outline-primary">
+                        <i class="fas fa-chart-pie"></i> View Report
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 shadow-sm report-card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-calendar-check fa-3x text-success"></i>
+                    </div>
+                    <h5 class="card-title">Appointment Analytics</h5>
+                    <p class="card-text">Analyze appointment trends, completion rates, and scheduling patterns.</p>
+                    <a asp-action="AppointmentStatistics" class="btn btn-outline-success">
+                        <i class="fas fa-chart-line"></i> View Report
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 shadow-sm report-card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-user-md fa-3x text-info"></i>
+                    </div>
+                    <h5 class="card-title">Doctor Performance</h5>
+                    <p class="card-text">Review doctor specializations, departments, and appointment volumes.</p>
+                    <a asp-action="DoctorStatistics" class="btn btn-outline-info">
+                        <i class="fas fa-chart-bar"></i> View Report
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6 col-lg-3 mb-4">
+            <div class="card h-100 shadow-sm report-card">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="fas fa-tachometer-alt fa-3x text-warning"></i>
+                    </div>
+                    <h5 class="card-title">System Dashboard</h5>
+                    <p class="card-text">Overall system statistics and real-time healthcare management insights.</p>
+                    <a asp-action="Dashboard" class="btn btn-outline-warning">
+                        <i class="fas fa-eye"></i> View Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Stats Overview -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-info-circle"></i> Quick Overview</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3 mb-3">
+                            <div class="border-end">
+                                <i class="fas fa-users fa-2x text-primary mb-2"></i>
+                                <h6>Patient Reports</h6>
+                                <small class="text-muted">Demographics, trends, and medical data analysis</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="border-end">
+                                <i class="fas fa-calendar-alt fa-2x text-success mb-2"></i>
+                                <h6>Appointment Analytics</h6>
+                                <small class="text-muted">Scheduling patterns, completion rates, and trends</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <div class="border-end">
+                                <i class="fas fa-stethoscope fa-2x text-info mb-2"></i>
+                                <h6>Doctor Performance</h6>
+                                <small class="text-muted">Specialization distribution and workload analysis</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <i class="fas fa-chart-line fa-2x text-warning mb-2"></i>
+                            <h6>System Metrics</h6>
+                            <small class="text-muted">Overall healthcare management performance</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity Summary -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-clock"></i> Available Reports</h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group">
+                        <a asp-action="PatientStatistics" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1"><i class="fas fa-user-injured text-primary"></i> Patient Demographics Report</h6>
+                                <small>Real-time</small>
+                            </div>
+                            <p class="mb-1">Detailed breakdown of patient age groups, gender distribution, and blood type analysis.</p>
+                        </a>
+                        
+                        <a asp-action="AppointmentStatistics" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1"><i class="fas fa-calendar text-success"></i> Appointment Trends Report</h6>
+                                <small>Updated hourly</small>
+                            </div>
+                            <p class="mb-1">Monthly appointment patterns, completion rates, and scheduling efficiency metrics.</p>
+                        </a>
+                        
+                        <a asp-action="DoctorStatistics" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1"><i class="fas fa-user-md text-info"></i> Doctor Performance Report</h6>
+                                <small>Updated daily</small>
+                            </div>
+                            <p class="mb-1">Specialization distribution, department analysis, and appointment volume per doctor.</p>
+                        </a>
+                        
+                        <a asp-action="Dashboard" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h6 class="mb-1"><i class="fas fa-tachometer-alt text-warning"></i> System Overview Dashboard</h6>
+                                <small>Live data</small>
+                            </div>
+                            <p class="mb-1">Comprehensive real-time view of all healthcare management system metrics and KPIs.</p>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .report-card {
+        transition: transform 0.2s ease-in-out;
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .report-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .border-end {
+        border-right: 1px solid #dee2e6;
+    }
+</style>

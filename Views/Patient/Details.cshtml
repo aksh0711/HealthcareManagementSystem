@@ -1,0 +1,226 @@
+@model HealthcareManagementSystem.Models.Patient
+
+@{
+    ViewData["Title"] = "Patient Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2><i class="fas fa-user text-primary"></i> Patient Details</h2>
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.PatientId" class="btn btn-outline-primary">
+            <i class="fas fa-edit"></i> Edit
+        </a>
+        <a asp-action="Index" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left"></i> Back to List
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user"></i> Personal Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <dt class="col-sm-4">Patient ID:</dt>
+                    <dd class="col-sm-8">@Model.PatientId</dd>
+                </div>
+                <div class="row mb-3">
+                    <dt class="col-sm-4">Full Name:</dt>
+                    <dd class="col-sm-8">@Model.FullName</dd>
+                </div>
+                <div class="row mb-3">
+                    <dt class="col-sm-4">Email:</dt>
+                    <dd class="col-sm-8">
+                        <a href="mailto:@Model.Email">@Model.Email</a>
+                    </dd>
+                </div>
+                <div class="row mb-3">
+                    <dt class="col-sm-4">Phone:</dt>
+                    <dd class="col-sm-8">
+                        <a href="tel:@Model.PhoneNumber">@Model.PhoneNumber</a>
+                    </dd>
+                </div>
+                <div class="row mb-3">
+                    <dt class="col-sm-4">Date of Birth:</dt>
+                    <dd class="col-sm-8">@Model.DateOfBirth.ToString("MMM dd, yyyy")</dd>
+                </div>
+                <div class="row mb-3">
+                    <dt class="col-sm-4">Age:</dt>
+                    <dd class="col-sm-8">@Model.Age years old</dd>
+                </div>
+                <div class="row mb-3">
+                    <dt class="col-sm-4">Gender:</dt>
+                    <dd class="col-sm-8">@Model.Gender</dd>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-home"></i> Contact Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <dt class="col-sm-4">Address:</dt>
+                    <dd class="col-sm-8">
+                        @if (!string.IsNullOrWhiteSpace(Model.Address))
+                        {
+                            @Model.Address
+                        }
+                        else
+                        {
+                            <em class="text-muted">No address provided</em>
+                        }
+                    </dd>
+                </div>
+                <div class="row mb-3">
+                    <dt class="col-sm-4">Emergency Contact:</dt>
+                    <dd class="col-sm-8">
+                        @if (!string.IsNullOrWhiteSpace(Model.EmergencyContactName))
+                        {
+                            @Model.EmergencyContactName
+                        }
+                        else
+                        {
+                            <em class="text-muted">No emergency contact</em>
+                        }
+                    </dd>
+                </div>
+                <div class="row mb-3">
+                    <dt class="col-sm-4">Emergency Phone:</dt>
+                    <dd class="col-sm-8">
+                        @if (!string.IsNullOrWhiteSpace(Model.EmergencyContactPhone))
+                        {
+                            <a href="tel:@Model.EmergencyContactPhone">@Model.EmergencyContactPhone</a>
+                        }
+                        else
+                        {
+                            <em class="text-muted">No emergency phone</em>
+                        }
+                    </dd>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-heartbeat"></i> Medical Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row mb-3">
+                    <dt class="col-sm-2">Blood Type:</dt>
+                    <dd class="col-sm-10">
+                        @if (!string.IsNullOrWhiteSpace(Model.BloodType))
+                        {
+                            <span class="badge bg-danger">@Model.BloodType</span>
+                        }
+                        else
+                        {
+                            <em class="text-muted">Not specified</em>
+                        }
+                    </dd>
+                </div>
+                <div class="row mb-3">
+                    <dt class="col-sm-2">Known Allergies:</dt>
+                    <dd class="col-sm-10">
+                        @if (!string.IsNullOrWhiteSpace(Model.Allergies))
+                        {
+                            <div class="alert alert-warning small mb-0">
+                                <i class="fas fa-exclamation-triangle"></i> @Model.Allergies
+                            </div>
+                        }
+                        else
+                        {
+                            <em class="text-muted">No known allergies</em>
+                        }
+                    </dd>
+                </div>
+                <div class="row mb-3">
+                    <dt class="col-sm-2">Medical History:</dt>
+                    <dd class="col-sm-10">
+                        @if (!string.IsNullOrWhiteSpace(Model.MedicalHistory))
+                        {
+                            @Model.MedicalHistory
+                        }
+                        else
+                        {
+                            <em class="text-muted">No medical history recorded</em>
+                        }
+                    </dd>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-clock"></i> Record Information</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="row mb-2">
+                            <dt class="col-sm-4">Created:</dt>
+                            <dd class="col-sm-8">@Model.CreatedAt.ToString("MMM dd, yyyy 'at' h:mm tt")</dd>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row mb-2">
+                            <dt class="col-sm-4">Last Updated:</dt>
+                            <dd class="col-sm-8">@Model.UpdatedAt.ToString("MMM dd, yyyy 'at' h:mm tt")</dd>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <a asp-action="Edit" asp-route-id="@Model.PatientId" class="btn btn-outline-primary me-md-2">
+                <i class="fas fa-edit"></i> Edit Patient
+            </a>
+            <a asp-action="Delete" asp-route-id="@Model.PatientId" class="btn btn-outline-danger me-md-2">
+                <i class="fas fa-trash"></i> Delete Patient
+            </a>
+            <a asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-list"></i> Back to List
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card {
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        border: 1px solid rgba(0, 0, 0, 0.125);
+    }
+    
+    .card-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+    }
+
+    dt {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    dd {
+        margin-bottom: 0;
+    }
+</style>

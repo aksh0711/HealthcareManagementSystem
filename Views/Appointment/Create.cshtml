@@ -1,0 +1,126 @@
+@model HealthcareManagementSystem.Models.Appointment
+
+@{
+    ViewData["Title"] = "Schedule New Appointment";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-calendar-plus text-primary"></i> Schedule New Appointment</h2>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-list"></i> Back to List
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-calendar-alt"></i> Appointment Details</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="PatientId" class="form-label">Patient</label>
+                                <select asp-for="PatientId" class="form-select" asp-items="@ViewData["PatientId"] as SelectList">
+                                    <option value="">-- Select Patient --</option>
+                                </select>
+                                <span asp-validation-for="PatientId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="DoctorId" class="form-label">Doctor</label>
+                                <select asp-for="DoctorId" class="form-select" asp-items="@ViewData["DoctorId"] as SelectList">
+                                    <option value="">-- Select Doctor --</option>
+                                </select>
+                                <span asp-validation-for="DoctorId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="AppointmentDateTime" class="form-label">Date & Time</label>
+                                <input asp-for="AppointmentDateTime" class="form-control" type="datetime-local" min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                                <small class="form-text text-muted">Select a future date and time</small>
+                                <span asp-validation-for="AppointmentDateTime" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="DurationMinutes" class="form-label">Duration (Minutes)</label>
+                                <input asp-for="DurationMinutes" class="form-control" value="30" />
+                                <span asp-validation-for="DurationMinutes" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="ReasonForVisit" class="form-label">Reason for Visit</label>
+                            <textarea asp-for="ReasonForVisit" class="form-control" rows="3"></textarea>
+                            <span asp-validation-for="ReasonForVisit" class="text-danger"></span>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Status" class="form-label">Status</label>
+                                <select asp-for="Status" class="form-select">
+                                    <option value="0">Scheduled</option>
+                                    <option value="1">Confirmed</option>
+                                    <option value="2">In Progress</option>
+                                    <option value="3">Completed</option>
+                                    <option value="4">Cancelled</option>
+                                    <option value="5">No Show</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="Fee" class="form-label">Fee</label>
+                                <input asp-for="Fee" class="form-control" step="0.01" />
+                                <span asp-validation-for="Fee" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Notes" class="form-label">Notes</label>
+                            <textarea asp-for="Notes" class="form-control" rows="2"></textarea>
+                            <span asp-validation-for="Notes" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-check mb-3">
+                            <input asp-for="IsPaid" class="form-check-input" type="checkbox" />
+                            <label asp-for="IsPaid" class="form-check-label">Payment Completed</label>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Schedule Appointment
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-info-circle"></i> Appointment Guidelines</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check-circle text-success"></i> Select patient and doctor</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Choose appropriate date and time</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Specify reason for visit</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Set appropriate consultation fee</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

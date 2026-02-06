@@ -1,0 +1,81 @@
+@model HealthcareManagementSystem.Controllers.PatientStatisticsViewModel
+
+@{
+    ViewData["Title"] = "Patient Statistics";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-users text-primary"></i> Patient Statistics</h2>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-list"></i> Back to Reports
+        </a>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-pie"></i> Patient Demographics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-4">
+                            <h3 class="text-primary">@Model.TotalPatients</h3>
+                            <small class="text-muted">Total Patients</small>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 class="text-info">@Model.MalePatients</h3>
+                            <small class="text-muted">Male Patients</small>
+                        </div>
+                        <div class="col-md-4">
+                            <h3 class="text-warning">@Model.FemalePatients</h3>
+                            <small class="text-muted">Female Patients</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-birthday-cake"></i> Age Distribution</h5>
+                </div>
+                <div class="card-body">
+                    @foreach (var ageGroup in Model.AgeGroups)
+                    {
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <span>@ageGroup.Key years:</span>
+                            <span class="badge bg-secondary">@ageGroup.Value</span>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    @if (Model.BloodTypeDistribution.Any())
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-tint"></i> Blood Type Distribution</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @foreach (var bloodType in Model.BloodTypeDistribution)
+                            {
+                                <div class="col-md-3 mb-3 text-center">
+                                    <h4 class="text-danger">@bloodType.Value</h4>
+                                    <small class="text-muted">@bloodType.Key</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

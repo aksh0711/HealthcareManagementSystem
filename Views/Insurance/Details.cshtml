@@ -1,0 +1,472 @@
+@model HealthcareManagementSystem.Models.Insurance
+
+@{
+    ViewData["Title"] = "Insurance Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="page-header">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8">
+                <h1><i class="fas fa-shield-alt"></i> Insurance Policy Details</h1>
+                <p>@Model.ProviderName - @Model.PolicyNumber</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <div class="btn-group" role="group">
+                    <a asp-action="Edit" asp-route-id="@Model.InsuranceId" class="btn btn-outline-light">
+                        <i class="fas fa-edit"></i> Edit
+                    </a>
+                    <a asp-action="VerifyEligibility" asp-route-id="@Model.InsuranceId" class="btn btn-outline-light">
+                        <i class="fas fa-shield-check"></i> Verify
+                    </a>
+                    <a asp-action="Index" class="btn btn-outline-light">
+                        <i class="fas fa-arrow-left"></i> Back to List
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <!-- Insurance Card Display -->
+        <div class="col-lg-4 mb-4">
+            <div class="insurance-card">
+                <div class="mb-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0">@Model.ProviderName</h5>
+                        @if (Model.Status == "Active")
+                        {
+                            <span class="badge bg-success">
+                                <i class="fas fa-check-circle"></i> Active
+                            </span>
+                        }
+                        else if (Model.Status == "Expired")
+                        {
+                            <span class="badge bg-warning">
+                                <i class="fas fa-clock"></i> Expired
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger">
+                                <i class="fas fa-times-circle"></i> Inactive
+                            </span>
+                        }
+                    </div>
+                </div>
+                
+                <div class="card-number mb-3">
+                    Policy: @Model.PolicyNumber
+                </div>
+                
+                <div class="row">
+                    <div class="col-6">
+                        <small>Group Number</small>
+                        <div class="fw-bold">@Model.GroupNumber</div>
+                    </div>
+                    <div class="col-6">
+                        <small>Coverage</small>
+                        <div class="fw-bold">@Model.CoveragePercentage.ToString("0")%</div>
+                    </div>
+                </div>
+                
+                <hr class="my-3" style="border-color: rgba(255,255,255,0.3);">
+                
+                <div class="row">
+                    <div class="col-6">
+                        <small>Copay</small>
+                        <div class="fw-bold">₹@Model.CopayAmount.ToString("0.00")</div>
+                    </div>
+                    <div class="col-6">
+                        <small>Deductible</small>
+                        <div class="fw-bold">₹@Model.DeductibleAmount.ToString("0.00")</div>
+                    </div>
+                </div>
+                
+                <div class="mt-3">
+                    <small>Effective: @Model.EffectiveDate.ToString("MMM dd, yyyy")</small>
+                    @if (Model.ExpirationDate.HasValue)
+                    {
+                        <br><small>Expires: @Model.ExpirationDate.Value.ToString("MMM dd, yyyy")</small>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Policy Information -->
+        <div class="col-lg-8">
+            <!-- Patient Information -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-user"></i> Patient Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Patient Name:</dt>
+                                <dd class="col-sm-7">
+                                    <strong>@Model.Patient.FullName</strong>
+                                </dd>
+                                <dt class="col-sm-5">Patient ID:</dt>
+                                <dd class="col-sm-7">@Model.Patient.PatientId</dd>
+                                <dt class="col-sm-5">Date of Birth:</dt>
+                                <dd class="col-sm-7">@Model.Patient.DateOfBirth.ToString("MMM dd, yyyy")</dd>
+                                <dt class="col-sm-5">Phone:</dt>
+                                <dd class="col-sm-7">@Model.Patient.PhoneNumber</dd>
+                            </dl>
+                        </div>
+                        <div class="col-md-6">
+                            <dl class="row">
+                                <dt class="col-sm-5">Email:</dt>
+                                <dd class="col-sm-7">@Model.Patient.Email</dd>
+                                <dt class="col-sm-5">Address:</dt>
+                                <dd class="col-sm-7">@Model.Patient.Address</dd>
+                                @if (!string.IsNullOrEmpty(Model.PrimaryInsuredName))
+                                {
+                                    <dt class="col-sm-5">Primary Insured:</dt>
+                                    <dd class="col-sm-7">@Model.PrimaryInsuredName</dd>
+                                }
+                                @if (!string.IsNullOrEmpty(Model.RelationshipToPrimary))
+                                {
+                                    <dt class="col-sm-5">Relationship:</dt>
+                                    <dd class="col-sm-7">
+                                        <span class="badge bg-info">@Model.RelationshipToPrimary</span>
+                                    </dd>
+                                }
+                            </dl>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Coverage Details -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-money-bill-alt"></i> Coverage Details</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="fas fa-percentage fa-2x text-primary mb-2"></i>
+                                <h4 class="mb-1">@Model.CoveragePercentage.ToString("0")%</h4>
+                                <small class="text-muted">Coverage</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="fas fa-dollar-sign fa-2x text-success mb-2"></i>
+                                <h4 class="mb-1">₹@Model.CopayAmount.ToString("0.00")</h4>
+                                <small class="text-muted">Copay</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="fas fa-chart-line fa-2x text-warning mb-2"></i>
+                                <h4 class="mb-1">₹@Model.DeductibleAmount.ToString("0.00")</h4>
+                                <small class="text-muted">Deductible</small>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center p-3 bg-light rounded">
+                                <i class="fas fa-calendar-check fa-2x text-info mb-2"></i>
+                                <h4 class="mb-1">
+                                    @if (Model.ExpirationDate.HasValue)
+                                    {
+                                        @((Model.ExpirationDate.Value - DateTime.Today).Days)
+                                    }
+                                    else
+                                    {
+                                        <span>∞</span>
+                                    }
+                                </h4>
+                                <small class="text-muted">Days Left</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Policy Timeline -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-calendar-alt"></i> Policy Timeline</h5>
+                </div>
+                <div class="card-body">
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-success"></div>
+                            <div class="timeline-content">
+                                <h6 class="timeline-title">Policy Created</h6>
+                                <p class="timeline-description">
+                                    Policy was created on @Model.CreatedAt.ToString("MMM dd, yyyy 'at' hh:mm tt")
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-marker bg-primary"></div>
+                            <div class="timeline-content">
+                                <h6 class="timeline-title">Effective Date</h6>
+                                <p class="timeline-description">
+                                    Coverage started on @Model.EffectiveDate.ToString("MMM dd, yyyy")
+                                </p>
+                            </div>
+                        </div>
+                        
+                        @if (Model.DocumentsUploadedAt.HasValue)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-info"></div>
+                                <div class="timeline-content">
+                                    <h6 class="timeline-title">Documents Uploaded</h6>
+                                    <p class="timeline-description">
+                                        Insurance documents were uploaded on @Model.DocumentsUploadedAt.Value.ToString("MMM dd, yyyy 'at' hh:mm tt")
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                        
+                        @if (Model.UpdatedAt > Model.CreatedAt.AddMinutes(1))
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-marker bg-warning"></div>
+                                <div class="timeline-content">
+                                    <h6 class="timeline-title">Last Updated</h6>
+                                    <p class="timeline-description">
+                                        Policy was last updated on @Model.UpdatedAt.ToString("MMM dd, yyyy 'at' hh:mm tt")
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                        
+                        @if (Model.ExpirationDate.HasValue)
+                        {
+                            <div class="timeline-item">
+                                <div class="timeline-marker @(Model.IsExpired ? "bg-danger" : "bg-secondary")"></div>
+                                <div class="timeline-content">
+                                    <h6 class="timeline-title">@(Model.IsExpired ? "Policy Expired" : "Expiration Date")</h6>
+                                    <p class="timeline-description">
+                                        Coverage @(Model.IsExpired ? "expired" : "expires") on @Model.ExpirationDate.Value.ToString("MMM dd, yyyy")
+                                    </p>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insurance Documents -->
+    @if (!string.IsNullOrEmpty(Model.FrontCardImagePath) || !string.IsNullOrEmpty(Model.BackCardImagePath) || !string.IsNullOrEmpty(Model.AdditionalDocumentsPath))
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-file-image"></i> Insurance Documents</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            @if (!string.IsNullOrEmpty(Model.FrontCardImagePath))
+                            {
+                                <div class="col-md-4 mb-3">
+                                    <div class="document-card">
+                                        <div class="document-header">
+                                            <i class="fas fa-id-card text-primary"></i>
+                                            <span class="ms-2">Front of Card</span>
+                                        </div>
+                                        <div class="document-body">
+                                            <a href="~/uploads/@Model.FrontCardImagePath" target="_blank" class="btn btn-outline-primary w-100">
+                                                <i class="fas fa-external-link-alt"></i> View Document
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.BackCardImagePath))
+                            {
+                                <div class="col-md-4 mb-3">
+                                    <div class="document-card">
+                                        <div class="document-header">
+                                            <i class="fas fa-id-card text-primary"></i>
+                                            <span class="ms-2">Back of Card</span>
+                                        </div>
+                                        <div class="document-body">
+                                            <a href="~/uploads/@Model.BackCardImagePath" target="_blank" class="btn btn-outline-primary w-100">
+                                                <i class="fas fa-external-link-alt"></i> View Document
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.AdditionalDocumentsPath))
+                            {
+                                var additionalDocs = Model.AdditionalDocumentsPath.Split(';');
+                                @for (int i = 0; i < additionalDocs.Length; i++)
+                                {
+                                    <div class="col-md-4 mb-3">
+                                        <div class="document-card">
+                                            <div class="document-header">
+                                                <i class="fas fa-file-alt text-info"></i>
+                                                <span class="ms-2">Additional Document @(i + 1)</span>
+                                            </div>
+                                            <div class="document-body">
+                                                <a href="~/uploads/@additionalDocs[i].Trim()" target="_blank" class="btn btn-outline-info w-100">
+                                                    <i class="fas fa-external-link-alt"></i> View Document
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Notes -->
+    @if (!string.IsNullOrEmpty(Model.Notes))
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-sticky-note"></i> Notes</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="mb-0">@Model.Notes</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+
+    <!-- Related Invoices -->
+    @if (Model.Invoices != null && Model.Invoices.Any())
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0"><i class="fas fa-file-invoice-dollar"></i> Related Invoices</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Invoice #</th>
+                                        <th>Date</th>
+                                        <th>Total Amount</th>
+                                        <th>Status</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var invoice in Model.Invoices.Take(5))
+                                    {
+                                        <tr>
+                                            <td>@invoice.InvoiceNumber</td>
+                                            <td>@invoice.InvoiceDate.ToString("MMM dd, yyyy")</td>
+                                            <td>₹@invoice.TotalAmount.ToString("0.00")</td>
+                                            <td>
+                                                <span class="badge bg-info">@invoice.Status</span>
+                                            </td>
+                                            <td>
+                                                <a href="#" class="btn btn-sm btn-outline-primary">View</a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                        @if (Model.Invoices.Count() > 5)
+                        {
+                            <div class="text-center">
+                                <small class="text-muted">Showing 5 of @Model.Invoices.Count() invoices</small>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <style>
+        .timeline {
+            position: relative;
+            padding-left: 30px;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 10px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--primary-color);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        
+        .timeline-marker {
+            position: absolute;
+            left: -25px;
+            top: 5px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+        
+        .timeline-content {
+            background: white;
+            border-radius: 5px;
+            padding: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .timeline-title {
+            margin: 0 0 5px 0;
+            font-weight: 600;
+        }
+        
+        .timeline-description {
+            margin: 0;
+            color: #666;
+        }
+        
+        .document-card {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .document-header {
+            background: #f8f9fa;
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+            font-weight: 500;
+        }
+        
+        .document-body {
+            padding: 12px;
+        }
+    </style>
+}

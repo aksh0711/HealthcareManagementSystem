@@ -1,0 +1,76 @@
+@model HealthcareManagementSystem.Models.Doctor
+
+@{
+    ViewData["Title"] = "Doctor Details";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-user-md text-primary"></i> Doctor Details</h2>
+        <div>
+            <a asp-action="Edit" asp-route-id="@Model.DoctorId" class="btn btn-warning">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-list"></i> Back to List
+            </a>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h5><i class="fas fa-info-circle"></i> Doctor Information</h5>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-2">Name:</dt>
+                <dd class="col-sm-10">Dr. @Model.FirstName @Model.LastName</dd>
+
+                <dt class="col-sm-2">Email:</dt>
+                <dd class="col-sm-10">@Model.Email</dd>
+
+                <dt class="col-sm-2">Phone:</dt>
+                <dd class="col-sm-10">@Model.PhoneNumber</dd>
+
+                <dt class="col-sm-2">Specialization:</dt>
+                <dd class="col-sm-10">@Model.Specialization</dd>
+
+                <dt class="col-sm-2">Department:</dt>
+                <dd class="col-sm-10">@Model.Department</dd>
+
+                <dt class="col-sm-2">License:</dt>
+                <dd class="col-sm-10">@Model.LicenseNumber</dd>
+
+                <dt class="col-sm-2">Experience:</dt>
+                <dd class="col-sm-10">@Model.YearsOfExperience years</dd>
+
+                <dt class="col-sm-2">Fee:</dt>
+                <dd class="col-sm-10">₹@Model.ConsultationFee</dd>
+
+                <dt class="col-sm-2">Status:</dt>
+                <dd class="col-sm-10">
+                    @if (Model.IsAvailable)
+                    {
+                        <span class="badge bg-success">Available</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger">Not Available</span>
+                    }
+                </dd>
+
+                @if (!string.IsNullOrEmpty(Model.Qualifications))
+                {
+                    <dt class="col-sm-2">Qualifications:</dt>
+                    <dd class="col-sm-10">@Model.Qualifications</dd>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.Biography))
+                {
+                    <dt class="col-sm-2">Biography:</dt>
+                    <dd class="col-sm-10">@Model.Biography</dd>
+                }
+            </dl>
+        </div>
+    </div>
+</div>

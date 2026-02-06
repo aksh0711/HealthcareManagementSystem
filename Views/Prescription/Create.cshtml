@@ -1,0 +1,126 @@
+@model HealthcareManagementSystem.Models.Prescription
+
+@{
+    ViewData["Title"] = "Create Prescription";
+}
+
+<div class="container-fluid">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2><i class="fas fa-pills text-primary"></i> Create Prescription</h2>
+        <a asp-action="Index" class="btn btn-secondary">
+            <i class="fas fa-list"></i> Back to List
+        </a>
+    </div>
+
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-prescription-bottle"></i> Prescription Details</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Create" method="post">
+                        @Html.AntiForgeryToken()
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="PatientId" class="form-label">Patient *</label>
+                                <select asp-for="PatientId" class="form-select" asp-items="ViewBag.PatientId">
+                                    <option value="">-- Select Patient --</option>
+                                </select>
+                                <span asp-validation-for="PatientId" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="DoctorId" class="form-label">Doctor *</label>
+                                <select asp-for="DoctorId" class="form-select" asp-items="ViewBag.DoctorId">
+                                    <option value="">-- Select Doctor --</option>
+                                </select>
+                                <span asp-validation-for="DoctorId" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="MedicationName" class="form-label">Medication Name *</label>
+                            <input asp-for="MedicationName" class="form-control" placeholder="Enter medication name" />
+                            <span asp-validation-for="MedicationName" class="text-danger"></span>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label asp-for="Dosage" class="form-label">Dosage *</label>
+                                <input asp-for="Dosage" class="form-control" placeholder="e.g., 500mg" />
+                                <span asp-validation-for="Dosage" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="Frequency" class="form-label">Frequency *</label>
+                                <input asp-for="Frequency" class="form-control" placeholder="e.g., Twice daily" />
+                                <span asp-validation-for="Frequency" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-4">
+                                <label asp-for="DurationDays" class="form-label">Duration (Days) *</label>
+                                <input asp-for="DurationDays" class="form-control" type="number" min="1" value="7" />
+                                <span asp-validation-for="DurationDays" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label asp-for="Quantity" class="form-label">Quantity</label>
+                                <input asp-for="Quantity" class="form-control" type="number" min="1" value="30" />
+                                <span asp-validation-for="Quantity" class="text-danger"></span>
+                            </div>
+                            <div class="col-md-6">
+                                <label asp-for="RefillsAllowed" class="form-label">Refills Allowed</label>
+                                <input asp-for="RefillsAllowed" class="form-control" type="number" min="0" value="0" />
+                                <span asp-validation-for="RefillsAllowed" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Instructions" class="form-label">Instructions</label>
+                            <textarea asp-for="Instructions" class="form-control" rows="3" placeholder="Special instructions for taking the medication..."></textarea>
+                            <span asp-validation-for="Instructions" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="SideEffects" class="form-label">Side Effects</label>
+                            <textarea asp-for="SideEffects" class="form-control" rows="2" placeholder="Possible side effects..."></textarea>
+                            <span asp-validation-for="SideEffects" class="text-danger"></span>
+                        </div>
+
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i> Create Prescription
+                            </button>
+                            <a asp-action="Index" class="btn btn-secondary">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h6><i class="fas fa-info-circle"></i> Prescription Guidelines</h6>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check-circle text-success"></i> Select patient and prescribing doctor</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Specify exact medication name</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Include precise dosage and frequency</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Set appropriate duration</li>
+                        <li><i class="fas fa-check-circle text-success"></i> Add clear instructions</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

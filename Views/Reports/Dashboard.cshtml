@@ -1,0 +1,349 @@
+@model HealthcareManagementSystem.Controllers.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Healthcare Dashboard";
+}
+
+<div class="container-fluid">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header bg-gradient text-white p-4 rounded-4 mb-4 shadow">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="fw-bold mb-2">
+                    <i class="fas fa-chart-line me-3"></i>Healthcare Analytics Dashboard
+                </h1>
+                <p class="lead mb-0 opacity-75">Real-time insights into your healthcare operations</p>
+            </div>
+            <div class="text-end">
+                <div class="mb-2">
+                    <small class="opacity-75">Last Updated:</small>
+                    <div class="fw-semibold">@DateTime.Now.ToString("MMM dd, yyyy HH:mm")</div>
+                </div>
+                <a asp-action="Index" class="btn btn-light btn-hover">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Reports
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Stats Cards with Modern Design -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-xl-3">
+            <div class="stats-card bg-gradient-primary text-white hover-lift shadow-lg rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="stats-number display-6 fw-bold mb-1">@Model.TotalPatients</div>
+                            <div class="stats-label text-light opacity-75">Total Patients</div>
+                            <div class="stats-trend mt-2">
+                                <i class="fas fa-arrow-up me-1"></i>
+                                <small class="opacity-75">+12% this month</small>
+                            </div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="fas fa-users fa-3x opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-black bg-opacity-10 border-0 py-2">
+                    <small class="text-light opacity-75">Active patient records</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-xl-3">
+            <div class="stats-card bg-gradient-info text-white hover-lift shadow-lg rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="stats-number display-6 fw-bold mb-1">@Model.TotalDoctors</div>
+                            <div class="stats-label text-light opacity-75">Active Doctors</div>
+                            <div class="stats-trend mt-2">
+                                <i class="fas fa-check me-1"></i>
+                                <small class="opacity-75">All available</small>
+                            </div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="fas fa-user-md fa-3x opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-black bg-opacity-10 border-0 py-2">
+                    <small class="text-light opacity-75">Certified specialists</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-xl-3">
+            <div class="stats-card bg-gradient-success text-white hover-lift shadow-lg rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="stats-number display-6 fw-bold mb-1">@Model.TotalAppointments</div>
+                            <div class="stats-label text-light opacity-75">Total Appointments</div>
+                            <div class="stats-trend mt-2">
+                                <i class="fas fa-calendar-check me-1"></i>
+                                <small class="opacity-75">@Model.TodayAppointments today</small>
+                            </div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="fas fa-calendar-alt fa-3x opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-black bg-opacity-10 border-0 py-2">
+                    <small class="text-light opacity-75">Scheduled visits</small>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6 col-xl-3">
+            <div class="stats-card bg-gradient-warning text-white hover-lift shadow-lg rounded-4 overflow-hidden">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center justify-content-between">
+                        <div>
+                            <div class="stats-number display-6 fw-bold mb-1 text-dark">@Model.TotalPrescriptions</div>
+                            <div class="stats-label text-dark opacity-75">Prescriptions</div>
+                            <div class="stats-trend mt-2">
+                                <i class="fas fa-prescription-bottle me-1 text-dark"></i>
+                                <small class="opacity-75 text-dark">@Model.ActivePrescriptions active</small>
+                            </div>
+                        </div>
+                        <div class="stats-icon">
+                            <i class="fas fa-pills fa-3x opacity-25"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-black bg-opacity-10 border-0 py-2">
+                    <small class="text-dark opacity-75">Medication orders</small>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Charts and Analytics Section -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 hover-lift">
+                <div class="card-header bg-gradient text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-chart-area me-2"></i>Daily Activity Overview
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <!-- Chart Container -->
+                    <div class="chart-container mb-4">
+                        <canvas id="dailyActivityChart" height="100"></canvas>
+                    </div>
+                    
+                    <!-- Quick Stats Row -->
+                    <div class="row g-3">
+                        <div class="col-6 col-md-3">
+                            <div class="mini-stat text-center p-3 bg-light rounded-3">
+                                <div class="mini-stat-number h4 mb-1 text-success">@Model.TodayAppointments</div>
+                                <div class="mini-stat-label small text-muted">Today's Appointments</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="mini-stat text-center p-3 bg-light rounded-3">
+                                <div class="mini-stat-number h4 mb-1 text-info">@Model.ActivePrescriptions</div>
+                                <div class="mini-stat-label small text-muted">Active Prescriptions</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="mini-stat text-center p-3 bg-light rounded-3">
+                                <div class="mini-stat-number h4 mb-1 text-primary">@((Model.TotalAppointments > 0) ? Math.Round((double)Model.TodayAppointments / Model.TotalAppointments * 100, 1) : 0)%</div>
+                                <div class="mini-stat-label small text-muted">Completion Rate</div>
+                            </div>
+                        </div>
+                        <div class="col-6 col-md-3">
+                            <div class="mini-stat text-center p-3 bg-light rounded-3">
+                                <div class="mini-stat-number h4 mb-1 text-warning">98.5%</div>
+                                <div class="mini-stat-label small text-muted">Satisfaction</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card shadow-lg border-0 hover-lift h-100">
+                <div class="card-header bg-gradient text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-user-plus me-2"></i>Recent Activity
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="activity-timeline">
+                        @if (Model.RecentPatients != null && Model.RecentPatients.Any())
+                        {
+                            @foreach (var patient in Model.RecentPatients.Take(5))
+                            {
+                                <div class="activity-item d-flex align-items-center p-3 border-bottom">
+                                    <div class="activity-icon me-3">
+                                        <div class="avatar-circle bg-primary text-white">
+                                            @patient.FirstName.Substring(0, 1)@patient.LastName.Substring(0, 1)
+                                        </div>
+                                    </div>
+                                    <div class="activity-content flex-grow-1">
+                                        <div class="activity-title fw-semibold">@patient.FirstName @patient.LastName</div>
+                                        <div class="activity-desc text-muted small">New patient registered</div>
+                                    </div>
+                                    <div class="activity-time text-end">
+                                        <small class="text-muted">@patient.CreatedAt.ToString("MMM dd")</small>
+                                        <div class="text-success small">
+                                            <i class="fas fa-check-circle"></i> Active
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        else
+                        {
+                            <div class="text-center py-4">
+                                <i class="fas fa-user-plus fa-2x text-muted mb-3"></i>
+                                <p class="text-muted mb-0">No recent patient activity</p>
+                            </div>
+                        }
+                    </div>
+                </div>
+                @if (Model.RecentPatients != null && Model.RecentPatients.Any())
+                {
+                    <div class="card-footer bg-light border-0 text-center">
+                        <a href="#" class="text-decoration-none small">
+                            View All Activity <i class="fas fa-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    
+    @if (Model.UpcomingAppointments != null && Model.UpcomingAppointments.Any())
+    {
+        <div class="row mt-4">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-calendar-plus"></i> Upcoming Appointments</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Date & Time</th>
+                                        <th>Patient</th>
+                                        <th>Doctor</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var appointment in Model.UpcomingAppointments)
+                                    {
+                                        <tr>
+                                            <td>@appointment.AppointmentDateTime.ToString("MMM dd, hh:mm tt")</td>
+                                            <td>
+                                                @if (appointment.Patient != null)
+                                                {
+                                                    @appointment.Patient.FirstName @appointment.Patient.LastName
+                                                }
+                                            </td>
+                                            <td>
+                                                @if (appointment.Doctor != null)
+                                                {
+                                                    <text>Dr. @appointment.Doctor.FirstName @appointment.Doctor.LastName</text>
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="badge bg-secondary">@appointment.Status.ToString()</span>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Initialize charts when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Daily Activity Chart
+            const ctx = document.getElementById('dailyActivityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+                    datasets: [{
+                        label: 'Appointments',
+                        data: [12, 19, 15, 25, 22, 18, 8],
+                        borderColor: '#2563eb',
+                        backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }, {
+                        label: 'Prescriptions',
+                        data: [8, 14, 12, 18, 16, 13, 5],
+                        borderColor: '#f59e0b',
+                        backgroundColor: 'rgba(245, 158, 11, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        },
+                        x: {
+                            grid: {
+                                color: 'rgba(0,0,0,0.05)'
+                            }
+                        }
+                    },
+                    elements: {
+                        point: {
+                            radius: 4,
+                            hoverRadius: 8
+                        }
+                    }
+                }
+            });
+
+            // Add loading animation to stats cards
+            document.querySelectorAll('.stats-card').forEach((card, index) => {
+                setTimeout(() => {
+                    card.style.opacity = '0';
+                    card.style.transform = 'translateY(20px)';
+                    card.style.transition = 'all 0.6s ease';
+                    
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, 100);
+                }, index * 150);
+            });
+        });
+    </script>
+}
